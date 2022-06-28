@@ -2,16 +2,34 @@
 // sign up related app logic in the users-service.js service module
 
 // Import all named exports attached to a usersAPI object
-// This syntax can be helpful documenting where the methods come from 
+// This syntax can be helpful documenting where the methods come from
 // * means everything or all so importing all of it
-import * as usersAPI from './users-api';
+import * as usersAPI from "./users-api";
 
 // async since we are awaiting the data in the form
 export async function signUp(userData) {
-    // Delegate the network request code to the users-api.js API module
-    // which will ultimately return a JSON Web Token (JWT)
-    const token = await usersAPI.signUp(userData);
-    // Baby step by returning whatever is sent back by the server
-    return token;
-    //function so you have to return something
+  // Delegate the network request code to the users-api.js API module
+  // which will ultimately return a JSON Web Token (JWT)
+  const token = await usersAPI.signUp(userData);
+  // Persist the "token"
+  localStorage.setItem("token", token);
+
+  //function so you have to return something
 }
+
+export function getToken() {
+  //getItem return null if there is no string
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  // Obtain the payload of the token
+  const payload = JSON.parse(atob(token.split(".")[1]));
+  // A JWT's exp is expressed in seconds, not milliseconds, so convert
+  if (payload.exp < Date.now() / 1000) {
+    // Token has expired - remove it from localStorage
+    localStorage.removeItem("token");
+    return null;
+  }
+  return token;
+}
+
+export function getUser() {}
