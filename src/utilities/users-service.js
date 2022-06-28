@@ -1,35 +1,77 @@
-// users-service.js
-// sign up related app logic in the users-service.js service module
+// // users-service.js
+// // sign up related app logic in the users-service.js service module
+
+// // Import all named exports attached to a usersAPI object
+// // This syntax can be helpful documenting where the methods come from
+// // * means everything or all so importing all of it
+// import * as usersAPI from "./users-api";
+
+// // async since we are awaiting the data in the form
+// export async function signUp(userData) {
+//   // Delegate the network request code to the users-api.js API module
+//   // which will ultimately return a JSON Web Token (JWT)
+//   console.log(userData)
+//   const token = await usersAPI.signUp(userData);
+//   // Persist the "token"
+
+//   localStorage.setItem("token", token);
+//   return getUser()
+
+//   //function so you have to return something
+// }
+
+// export function getToken() {
+//   //getItem return null if there is no string
+//   const token = localStorage.getItem("token");
+//   if (!token) return null;
+//   // Obtain the payload of the token
+//   const payload = JSON.parse(atob(token.split(".")[1]));
+//   // A JWT's exp is expressed in seconds, not milliseconds, so convert
+//   if (payload.exp < Date.now() / 1000) {
+//     // Token has expired - remove it from localStorage
+//     localStorage.removeItem("token");
+//     return null;
+//   }
+//   return token;
+// }
+
+// export function getUser() {
+//     const token = getToken();
+//   // If there's a token, return the user in the payload, otherwise return null
+//   return token ? JSON.parse(atob(token.split('.')[1])).user : null;
+// }
+
 
 // Import all named exports attached to a usersAPI object
-// This syntax can be helpful documenting where the methods come from
-// * means everything or all so importing all of it
-import * as usersAPI from "./users-api";
+// This syntax can be helpful documenting where the methods come from 
+import * as usersAPI from './users-api'
 
-// async since we are awaiting the data in the form
 export async function signUp(userData) {
-  // Delegate the network request code to the users-api.js API module
-  // which will ultimately return a JSON Web Token (JWT)
-  const token = await usersAPI.signUp(userData);
-  // Persist the "token"
-  localStorage.setItem("token", token);
-
-  //function so you have to return something
+    // Delegate the network request code to the users-api.js API module
+    // which will ultimately return a JSON Web Token (JWT)
+    const token = await usersAPI.signUp(userData)
+    // Persist the "token"
+    localStorage.setItem('token', token)
+    return getUser()
 }
 
 export function getToken() {
-  //getItem return null if there is no string
-  const token = localStorage.getItem("token");
-  if (!token) return null;
-  // Obtain the payload of the token
-  const payload = JSON.parse(atob(token.split(".")[1]));
-  // A JWT's exp is expressed in seconds, not milliseconds, so convert
-  if (payload.exp < Date.now() / 1000) {
-    // Token has expired - remove it from localStorage
-    localStorage.removeItem("token");
-    return null;
-  }
-  return token;
+    // getItem return null if there's no string
+    const token = localStorage.getItem('token')
+    if (!token) return null
+    // Obtain the payload of the token
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    // A JWT's exp is expressed in seconds, not milliseconds, so convert
+    if (payload.exp < Date.now() / 1000) {
+        // Token has expired - remove it from localStorage
+        localStorage.removeItem('token')
+        return null
+    }
+    return token
 }
 
-export function getUser() {}
+export function getUser() {
+    const token = getToken()
+    // If there's a token, return the user in the payload, otherwise return null
+    return token ? JSON.parse(atob(token.split('.')[1])).user : null
+}
